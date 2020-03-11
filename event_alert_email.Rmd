@@ -1,0 +1,35 @@
+---
+output: 
+  html_document
+params:
+  name: Test User
+  file: event_alert.csv
+---
+
+```{r setup, include=FALSE}
+
+library(readr)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(lubridate)
+
+#read the saved file
+event_alert <- read_csv("event_alert.csv")
+event_alert$UnitID <- as.character(event_alert$UnitID)
+event_alert$'Date When Completed' <- as.Date(event_alert$dateCreated)
+```
+
+Hi `r params$name`!
+
+As of `r today()`, these units have resubmitted data. They were assigned to you, have a look!
+
+```{r, echo=FALSE}
+#display the schools by user
+event_alert %>% 
+  filter(user==params$name) %>% 
+  select(UnitID, 'Unit Name', 'Date When Completed') %>% 
+  kable() %>% 
+  kable_styling()
+```
+
